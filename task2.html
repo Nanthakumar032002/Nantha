@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="calendarApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Calendar</title>
+    <style>
+        .calendar {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: aqua;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.day {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.events {
+    margin-top: 20px;
+}
+
+.events ul {
+    list-style: none;
+    padding: 0;
+}
+
+.events form {
+    margin-top: 10px;
+}
+
+.events input, .events button {
+    margin-right: 5px;
+}
+
+    </style>
+</head>
+<body>
+    <div ng-controller="CalendarController as calendar">
+        <div class="calendar">
+            <div class="header">
+                <button ng-click="calendar.prevMonth()">Previous</button>
+                <h2>{{ calendar.currentMonth }}</h2>
+                <button ng-click="calendar.nextMonth()">Next</button>
+            </div>
+            <div class="days">
+                <div class="day" ng-repeat="day in calendar.daysInMonth">
+                    {{ day }}
+                </div>
+            </div>
+            <div class="events">
+                <h3>Events</h3>
+                <ul>
+                    <li ng-repeat="event in calendar.events">
+                        {{ event.date }} - {{ event.title }}
+                    </li>
+                </ul>
+                <form ng-submit="calendar.addEvent()">
+                    <input type="text" placeholder="Event Title" ng-model="calendar.newEvent.title" required>
+                    <input type="date" ng-model="calendar.newEvent.date" required>
+                    <button type="submit">Add Event</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script >angular.module('calendarApp', [])
+        .controller('CalendarController', function() {
+            var vm = this;
+    
+            vm.daysInMonth = [];
+            vm.currentMonth = '';
+            vm.newEvent = { title: '', date: '' };
+            vm.events = [];
+    
+            // Initialize calendar
+            var today = new Date();
+            vm.currentMonth = today.toLocaleString('default', { month: 'long' });
+            vm.generateCalendar(today.getFullYear(), today.getMonth());
+    
+            // Functions
+            vm.generateCalendar = function(year, month) {
+                vm.daysInMonth = [];
+                var daysInMonth = new Date(year, month + 1, 0).getDate();
+                for (var i = 1; i <= daysInMonth; i++) {
+                    vm.daysInMonth.push(i);
+                }
+            };
+    
+            vm.prevMonth = function() {
+                today.setMonth(today.getMonth() - 1);
+                vm.currentMonth = today.toLocaleString('default', { month: 'long' });
+                vm.generateCalendar(today.getFullYear(), today.getMonth());
+            };
+    
+            vm.nextMonth = function() {
+                today.setMonth(today.getMonth() + 1);
+                vm.currentMonth = today.toLocaleString('default', { month: 'long' });
+                vm.generateCalendar(today.getFullYear(), today.getMonth());
+            };
+    
+            vm.addEvent = function() {
+                vm.events.push({ title: vm.newEvent.title, date: vm.newEvent.date });
+                vm.newEvent.title = '';
+                vm.newEvent.date = '';
+            };
+        });
+    </script>
+</body>
+</html>
