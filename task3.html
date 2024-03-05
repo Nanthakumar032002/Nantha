@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="todoApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        .todo-list {
+    list-style: none;
+    padding: 0;
+    background-color:rgb(18, 139, 143);
+
+}
+
+.todo-list li {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #070303;
+    background-color: #f9f9f9;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.todo-list li.completed {
+    background-color: #61cc3a;
+    text-decoration: line-through;
+}
+
+.todo-list li button {
+    position: absolute;
+    top: 0;
+    right: -40px;
+    width: 40px;
+    height: 100%;
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.todo-list li:hover button {
+    right: 0%;
+    width:auto;
+
+}
+body{
+    background-color:rgb(18, 139, 143);
+    color:white;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    
+}
+.todo-list li span{
+    color: #000000;
+}
+    </style>
+</head>
+<body>
+    <div ng-controller="TodoController as todo">
+        <h1>To-Do List</h1>
+        <form ng-submit="todo.addTask()">
+            <input type="text" ng-model="todo.newTask" placeholder="Add new task" required>
+            <button type="submit">Add</button>
+        </form>
+        <ul class="todo-list">
+            <li ng-repeat="task in todo.tasks" ng-class="{ 'completed': task.completed }">
+                <span>{{ task.title }}</span>
+                <button ng-click="todo.removeTask($index)">Remove</button>
+            </li>
+        </ul>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        angular.module('todoApp', [])
+    .controller('TodoController', function() {
+        var vm = this;
+
+        vm.tasks = [];
+        vm.newTask = '';
+
+        vm.addTask = function() {
+            if (vm.newTask.trim() !== '') {
+                vm.tasks.push({ title: vm.newTask, completed: false });
+                vm.newTask = '';
+            }
+        };
+
+        vm.removeTask = function(index) {
+            vm.tasks.splice(index, 1);
+        };
+    });
+
+    </script>
+</body>
+</html>
