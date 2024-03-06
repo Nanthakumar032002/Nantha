@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html ng-app="quizApp">
+
+<head>
+    <title>Angular Quiz App</title>
+    <style>
+        .container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    background-color: aquamarine;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #f3032b;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4b19d6;
+}
+
+    </style>
+    
+</head>
+
+<body ng-controller="QuizController">
+    <div class="container">
+        <h1>{{ quiz.title }}</h1>
+        <div ng-show="!quizCompleted">
+            <div ng-repeat="question in quiz.questions">
+                <h3>{{ question.text }}</h3>
+                
+                <ul>
+                    <li ng-repeat="option in question.options">
+                        <label>
+                            <input type="radio" ng-model="question.selectedOption" ng-value="option">
+                            {{ option }}
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <button ng-click="checkAnswers()">Submit</button>
+        </div>
+        <div ng-show="quizCompleted">
+            <h2>Quiz Completed!</h2>
+            <p>Your score: {{ score }}</p>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script >var app = angular.module('quizApp', []);
+
+        app.controller('QuizController', function($scope) {
+            $scope.quiz = {
+                title: "Angular Quiz",
+                questions: [
+                    {
+                        text: "What is AngularJS?",
+                        options: ["A JavaScript framework", "A programming language", "A design pattern"],
+                        answer: "A JavaScript framework"
+                    },
+                    {
+                        text: "What does MVC stand for?",
+                        options: ["Model View Controller", "Most Valuable Code", "Model Validation Component"],
+                        answer: "Model View Controller"
+                    },
+                    // Add more questions here
+                ]
+            };
+        
+            $scope.score = 0;
+            $scope.quizCompleted = false;
+        
+            $scope.checkAnswers = function() {
+                $scope.score = 0;
+                $scope.quiz.questions.forEach(function(question) {
+                    if (question.selectedOption === question.answer) {
+                        $scope.score++;
+                    }
+                });
+                $scope.quizCompleted = true;
+            };
+        });
+        </script>
+</body>
+
+</html>
